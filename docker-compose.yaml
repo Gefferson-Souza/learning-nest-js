@@ -1,0 +1,19 @@
+# Remova a linha 'version' que está obsoleta conforme o aviso
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-local
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meubanco
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: senha123
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local
