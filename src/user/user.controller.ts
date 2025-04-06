@@ -17,9 +17,9 @@ export class UserController {
   }
 
   @Get(':id')
-  async readOne(@Param() id:string): Promise<any> {
+  async readOne(@Param() id:any): Promise<any> {
     const user = {
-        id
+        ...id
     }
     return user;
   }

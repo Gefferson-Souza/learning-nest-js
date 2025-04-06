@@ -10,7 +10,7 @@
         "sourceMaps": true,
         "envFile": "${workspaceFolder}/.env",
         "cwd": "${workspaceRoot}",
-        "console": "integratedTerminal"
+        "console": "integratedTerminal",
       },
       {
         "type": "node",
@@ -18,7 +18,6 @@
         "name": "Debug Tests",
         "runtimeExecutable": "npm",
         "runtimeArgs": ["run", "test:debug"],
-        "port": 9229,
         "stopOnEntry": false,
         "sourceMaps": true
       }
