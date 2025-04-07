@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UserController {
   @Post()
-  async create(@Body() body: any): Promise<any> {
-    console.log('User created:', body);
-    return body;
+  async create(@Body() {name, email, password}: CreateUserDto): Promise<any> {
+    return {name, email, password};
   }
 
   @Get()
@@ -22,7 +22,7 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(@Body() body, @Param() params): Promise<any> {
+  async update(@Body() body:CreateUserDto, @Param() params): Promise<any> {
     return {
       user: {},
       params,
