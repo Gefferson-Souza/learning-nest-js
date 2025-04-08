@@ -26,7 +26,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async readOne(@Param('id', ParseIntPipe) params:number): Promise<any> {
+  async readOne(@Param('id', ParseIntPipe) params: number): Promise<any> {
     return {
       user: {},
       params,
@@ -36,7 +36,7 @@ export class UserController {
   @Put(':id')
   async update(
     @Body() { name, email, password }: UpdatePutUserDto,
-    @Param('id', ParseIntPipe) params:number,
+    @Param('id', ParseIntPipe) params: number,
   ): Promise<any> {
     return {
       user: {},
@@ -48,7 +48,10 @@ export class UserController {
   }
 
   @Patch(':id')
-  async updatePartial(@Body() body:UpdatePatchUserDto, @Param('id', ParseIntPipe) params:number): Promise<any> {
+  async updatePartial(
+    @Body() body: UpdatePatchUserDto,
+    @Param('id', ParseIntPipe) params: number,
+  ): Promise<any> {
     return {
       user: {},
       params,
@@ -57,7 +60,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseIntPipe) params:number): Promise<any> {
+  async deleteUser(@Param('id', ParseIntPipe) params: number): Promise<any> {
     return {
       user: {},
       params,
