@@ -14,9 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
 import { UserService } from './user.service';
-import { LogInterceptor } from 'src/interceptors/log.interceptors';
 
-@UseInterceptors(LogInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly _userService: UserService) {}
