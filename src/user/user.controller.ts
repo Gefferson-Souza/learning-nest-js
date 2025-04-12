@@ -25,48 +25,32 @@ export class UserController {
 
   @Get()
   async read(): Promise<any> {
-    return { users: [] };
+    return this._userService.list();
   }
 
   @Get(':id')
-  async readOne(@Param('id', ParseIntPipe) params: number): Promise<any> {
-    return {
-      user: {},
-      params,
-    };
+  async readOne(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    this._userService.findOne(id);
   }
 
   @Put(':id')
   async update(
-    @Body() { name, email, password }: UpdatePutUserDto,
-    @Param('id', ParseIntPipe) params: number,
+    @Body() data: UpdatePutUserDto,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<any> {
-    return {
-      user: {},
-      params,
-      name,
-      email,
-      password,
-    };
+    return this._userService.update(id,data);
   }
 
   @Patch(':id')
   async updatePartial(
     @Body() body: UpdatePatchUserDto,
-    @Param('id', ParseIntPipe) params: number,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<any> {
-    return {
-      user: {},
-      params,
-      body,
-    };
+    return this._userService.updatePartial(id, body);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseIntPipe) params: number): Promise<any> {
-    return {
-      user: {},
-      params,
-    };
+  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    return this._userService.deleteUser(id);
   }
 }
