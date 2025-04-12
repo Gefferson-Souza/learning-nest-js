@@ -3,17 +3,15 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
-  ParseIntPipe,
   Patch,
   Post,
   Put,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
 import { UserService } from './user.service';
+import { ParamId } from 'src/decorators/param-id.decorator';
 
 @Controller('users')
 export class UserController {
@@ -31,14 +29,16 @@ export class UserController {
   }
 
   @Get(':id')
-  async readOne(@Param('id', ParseIntPipe) id: number): Promise<any> {
+  async readOne(
+    @ParamId() id: number,
+  ): Promise<any> {
     return this._userService.findOne(id);
   }
 
   @Put(':id')
   async update(
     @Body() data: UpdatePutUserDto,
-    @Param('id', ParseIntPipe) id: number,
+    @ParamId() id: number,
   ): Promise<any> {
     return this._userService.update(id,data);
   }
@@ -46,13 +46,15 @@ export class UserController {
   @Patch(':id')
   async updatePartial(
     @Body() body: UpdatePatchUserDto,
-    @Param('id', ParseIntPipe) id: number,
+    @ParamId() id: number,
   ): Promise<any> {
     return this._userService.updatePartial(id, body);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<any> {
+  async deleteUser(
+    @ParamId() id: number,
+  ): Promise<any> {
     return this._userService.deleteUser(id);
   }
 }
