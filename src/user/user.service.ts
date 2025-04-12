@@ -18,6 +18,8 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<any> {
+    await this.exists(id);
+
     return this._prismaService.user.findUnique({
       where: {
         id
@@ -26,9 +28,8 @@ export class UserService {
   }
 
   async update (id: number, data: UpdatePutUserDto) {
-    if(!(await this.exists(id))) {
-      throw new NotFoundException('Usuário não encontrado')
-    }
+    await this.exists(id);
+
     data.birthAt = data.birthAt ? new Date(data.birthAt) : null
 
     return this._prismaService.user.update({
@@ -40,9 +41,8 @@ export class UserService {
   }
 
   async updatePartial(id: number, data: UpdatePatchUserDto) {
-    if(!(await this.exists(id))) {
-      throw new NotFoundException('Usuário não encontrado')
-    }
+    await this.exists(id);
+
     if(data.birthAt) {
       data.birthAt = new Date(data.birthAt)
     }
@@ -57,9 +57,8 @@ export class UserService {
 
   async deleteUser(id: number) {
 
-    if(!(await this.exists(id))) {
-      throw new NotFoundException('Usuário não encontrado')
-    }
+    await this.exists(id)
+
     return this._prismaService.user.delete({
       where: {
         id
@@ -68,11 +67,15 @@ export class UserService {
   }
 
   async exists(id: number): Promise<boolean> {
-    const user = await this._prismaService.user.findUnique({
+    const user = await this._prismaService.user.count({
       where: {
         id
       }
     })
+    if(!user) {
+      throw new NotFoundException('Usuário não encontrado')
+    }
+
     return !!user;
   }
 }
