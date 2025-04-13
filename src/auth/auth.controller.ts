@@ -8,37 +8,28 @@ import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly _authService: AuthService,
-        private readonly _userService: UserService,
-    ){}
+  constructor(
+    private readonly _authService: AuthService,
+    private readonly _userService: UserService,
+  ) {}
 
-    @Post('login')
-    async login(
-        @Body() {email, password}: AuthLoginDto
-    ) {
-        return this._authService.login(email, password);
-    }
+  @Post('login')
+  async login(@Body() { email, password }: AuthLoginDto) {
+    return this._authService.login(email, password);
+  }
 
-    @Post('register')
-    async register (
-        @Body() body: AuthRegisterDto
-    ) {
-        return this._userService.create(body);
-    }
+  @Post('register')
+  async register(@Body() body: AuthRegisterDto) {
+    return this._userService.create(body);
+  }
 
-    @Post('forget')
-    async forget (
-        @Body() {email}: AuthForgetDto
-    ) {
-        return this._authService.forget(email);
-    }
+  @Post('forget')
+  async forget(@Body() { email }: AuthForgetDto) {
+    return this._authService.forget(email);
+  }
 
-    @Post('reset')
-    async reset (
-        @Body() {token, password}: AuthResetDto
-    ) {
-        return this._authService.reset(token, password);
-    }
-    
+  @Post('reset')
+  async reset(@Body() { token, password }: AuthResetDto) {
+    return this._authService.reset(token, password);
+  }
 }

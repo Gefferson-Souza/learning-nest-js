@@ -17,7 +17,6 @@ import { ParamId } from 'src/decorators/param-id.decorator';
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
-
   @Post()
   async create(@Body() data: CreateUserDto): Promise<any> {
     return this._userService.create(data);
@@ -29,9 +28,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async readOne(
-    @ParamId() id: number,
-  ): Promise<any> {
+  async readOne(@ParamId() id: number): Promise<any> {
     return this._userService.findOne(id);
   }
 
@@ -40,7 +37,7 @@ export class UserController {
     @Body() data: UpdatePutUserDto,
     @ParamId() id: number,
   ): Promise<any> {
-    return this._userService.update(id,data);
+    return this._userService.update(id, data);
   }
 
   @Patch(':id')
@@ -52,9 +49,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteUser(
-    @ParamId() id: number,
-  ): Promise<any> {
+  async deleteUser(@ParamId() id: number): Promise<any> {
     return this._userService.deleteUser(id);
   }
 }

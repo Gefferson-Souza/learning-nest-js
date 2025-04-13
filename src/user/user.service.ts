@@ -7,7 +7,7 @@ import { IsDateString } from 'class-validator';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly _prismaService: PrismaService) { }
+  constructor(private readonly _prismaService: PrismaService) {}
 
   async create(data: CreateUserDto) {
     return this._prismaService.user.create({ data });
@@ -22,58 +22,57 @@ export class UserService {
 
     return this._prismaService.user.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
-  async update (id: number, data: UpdatePutUserDto) {
+  async update(id: number, data: UpdatePutUserDto) {
     await this.exists(id);
 
-    data.birthAt = data.birthAt ? new Date(data.birthAt) : null
+    data.birthAt = data.birthAt ? new Date(data.birthAt) : null;
 
     return this._prismaService.user.update({
       where: {
-        id
+        id,
       },
-      data
-    })
+      data,
+    });
   }
 
   async updatePartial(id: number, data: UpdatePatchUserDto) {
     await this.exists(id);
 
-    if(data.birthAt) {
-      data.birthAt = new Date(data.birthAt)
+    if (data.birthAt) {
+      data.birthAt = new Date(data.birthAt);
     }
 
     return this._prismaService.user.update({
       where: {
-        id
+        id,
       },
-      data
-    })
+      data,
+    });
   }
 
   async deleteUser(id: number) {
-
-    await this.exists(id)
+    await this.exists(id);
 
     return this._prismaService.user.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async exists(id: number): Promise<boolean> {
     const user = await this._prismaService.user.count({
       where: {
-        id
-      }
-    })
-    if(!user) {
-      throw new NotFoundException('Usuário não encontrado')
+        id,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
     }
 
     return !!user;
