@@ -38,7 +38,7 @@ export class AuthService {
     };
   }
 
-  checkToken(token: string): String | BadRequestException {
+  checkToken(token: string): any | BadRequestException {
     try {
       const validToken = this._jwtService.verify(token, {
         audience: this.audience,
@@ -60,7 +60,7 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<any> {
     const user: Partial<User> | null = await this._prismaService.user.findFirst(
       {
         where: {
@@ -82,7 +82,7 @@ export class AuthService {
     return this.createToken(user);
   }
 
-  async forget(email: string) {
+  async forget(email: string): Promise<boolean> {
     const user = await this._prismaService.user.findFirst({
       where: {
         email,
