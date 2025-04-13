@@ -6,28 +6,32 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthRegisterDto } from './dto/auth-register.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly _jwtService: JwtService,
     private readonly _prismaService: PrismaService,
+    private readonly _userService: UserService,
   ) {}
 
-  async createToken(user: User) {
-    return this._jwtService.sign(
-      {
-        sub: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      {
-        expiresIn: '7 days',
-        subject: user.id.toString(),
-        issuer: 'login',
-        audience: 'users',
-      },
-    );
+  async createToken(user: Partial<User>) {
+    return {
+      token: this._jwtService.sign(
+        {
+          name: user.name,
+          email: user.email,
+        },
+        {
+          expiresIn: '7 days',
+          subject: String(user.id),
+          issuer: 'login',
+          audience: 'users',
+        },
+      ),
+    };
   }
 
   async checkToken() {
@@ -35,18 +39,25 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this._prismaService.user.findFirst({
-      where: {
-        email,
-        password,
+    const user: Partial<User> | null = await this._prismaService.user.findFirst(
+      {
+        where: {
+          email,
+          password,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
       },
-    });
+    );
 
     if (!user) {
       throw new UnauthorizedException('Email e/ou senha incorretos.');
     }
 
-    return user;
+    return this.createToken(user);
   }
 
   async forget(email: string) {
@@ -71,7 +82,7 @@ export class AuthService {
     //TO DO: Extrair id do token...
     const id = 0;
 
-    await this._prismaService.user.update({
+    const user: User = await this._prismaService.user.update({
       where: {
         id,
       },
@@ -79,5 +90,13 @@ export class AuthService {
         password,
       },
     });
+
+    return this.createToken(user);
+  }
+
+  async register(data: AuthRegisterDto) {
+    const user = await this._userService.create(data);
+
+    return this.createToken(user);
   }
 }
