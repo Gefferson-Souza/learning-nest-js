@@ -32,4 +32,9 @@ export class AuthController {
   async reset(@Body() { token, password }: AuthResetDto) {
     return this._authService.reset(token, password);
   }
+
+  @Post('verify')
+  async verify(@Body() { token }: any) {
+    return this._authService.checkToken(token);
+  }
 }

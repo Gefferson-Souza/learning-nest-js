@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -11,6 +12,9 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
+  private readonly issuer: string = 'login';
+  private readonly audience: string = 'users';
+
   constructor(
     private readonly _jwtService: JwtService,
     private readonly _prismaService: PrismaService,
@@ -27,15 +31,33 @@ export class AuthService {
         {
           expiresIn: '7 days',
           subject: String(user.id),
-          issuer: 'login',
-          audience: 'users',
+          issuer: this.issuer,
+          audience: this.audience,
         },
       ),
     };
   }
 
-  async checkToken() {
-    return true;
+  checkToken(token: string): String | BadRequestException {
+    try {
+      const validToken = this._jwtService.verify(token, {
+        audience: this.audience,
+        issuer: this.issuer,
+      });
+
+      return validToken;
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  isValidToken(token: string): boolean {
+    try {
+      this.checkToken(token);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async login(email: string, password: string) {
