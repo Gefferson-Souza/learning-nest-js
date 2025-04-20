@@ -10,7 +10,7 @@ import { FileModule } from 'src/file/file.module';
 @Module({
   imports: [
     JwtModule.register({
-      secret:process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET,
     }),
     forwardRef(() => UserModule),
     PrismaModule,

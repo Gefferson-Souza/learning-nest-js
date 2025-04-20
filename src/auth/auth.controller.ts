@@ -7,6 +7,8 @@ import {
   UseInterceptors,
   UploadedFile,
   NotFoundException,
+  BadRequestException,
+  UploadedFiles,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -16,7 +18,7 @@ import { AuthResetDto } from './dto/auth-reset.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { User } from 'src/decorators/user.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { writeFile } from 'fs';
 import path, { join } from 'path';
 import { FileService } from 'src/file/file.service';
@@ -58,18 +60,32 @@ export class AuthController {
     };
   }
 
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('file'))
   @UseGuards(AuthGuard)
   @Post('photo')
-  async uploadPhoto(@Headers('authorization') token: string, @UploadedFile() photo: Express.Multer.File) {
-    const path = join(__dirname, '..', '..', 'storage', 'photo', photo.originalname);
-
+  async uploadPhoto(
+    @Headers('authorization') token: string,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
     try {
-      const storagePath = join(__dirname, '..', '..', 'storage', 'photos');
-      const filePath = await this._fileService.uploadFile(photo, '');
-      return { success: true, message: 'File uploaded successfully!', path: filePath };
-  } catch (err) {
-      throw new NotFoundException(`Error uploading file: ${err.message}`);
-  }
+      const filesPromieses: Promise<any>[] = files.map(
+        (file: Express.Multer.File) => {
+          const storagePath = join(
+            __dirname,
+            '..',
+            '..',
+            'storage',
+            'photo',
+            file.originalname,
+          );
+          return this._fileService.uploadFile(file, storagePath);
+        },
+      );
+      await Promise.all(filesPromieses);
+
+      return { success: true, message: 'Files uploaded successfully!' };
+    } catch (err) {
+      throw new BadRequestException(`Error uploading file: ${err.message}`);
+    }
   }
 }
