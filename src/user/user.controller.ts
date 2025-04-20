@@ -16,8 +16,9 @@ import { ParamId } from 'src/decorators/param-id.decorator';
 import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
-@UseGuards(RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly _userService: UserService) {}

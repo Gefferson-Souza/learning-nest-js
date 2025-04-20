@@ -3,7 +3,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
-import { IsDateString } from 'class-validator';
 
 @Injectable()
 export class UserService {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
@@ -12,7 +12,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
       secret:
         "XVdWMYu-VsFeX8I1NiIsInR5cCI6Ikpr!0aV__JTlH_jCJ9.eyJzE[Zqal3'&=_G,$w/3aI'4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.-hUI9t0YVJiOiIxIciOiJIUzy_EDrGis_wiCwOlYMjM0NTY3ODkwIiwibmFtZSI6IkpvaGeyJhbGcfshFkg",
     }),
-    UserModule,
+    forwardRef(() => UserModule),
     PrismaModule,
   ],
   controllers: [AuthController],
