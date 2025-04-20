@@ -12,11 +12,14 @@ import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
 import { UserService } from './user.service';
 import { ParamId } from 'src/decorators/param-id.decorator';
+import { Role } from 'src/enums/role.enum';
+import Roles from 'src/decorators/roles.decorator';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
+  @Roles(Role.Admin)
   @Post()
   async create(@Body() data: CreateUserDto): Promise<any> {
     return this._userService.create(data);

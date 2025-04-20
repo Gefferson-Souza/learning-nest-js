@@ -9,6 +9,7 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
   @Post()
   setHello(@Query('message') message: string): string {
     return this.appService.setHello(message);

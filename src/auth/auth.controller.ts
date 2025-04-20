@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Headers, UseGuards, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Headers,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthRegisterDto } from './dto/auth-register.dto';
@@ -6,6 +13,7 @@ import { AuthForgetDto } from './dto/auth-forget.dto';
 import { AuthResetDto } from './dto/auth-reset.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { User } from 'src/decorators/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -36,10 +44,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Post('verify')
-  async verify(@Headers('authorization') token: string, @Req() req: any) {
+  async verify(@Headers('authorization') token: string, @User('id') user: any) {
     return {
-        user: req.user,
-        token: token,
-    }
+      user,
+      token,
+    };
   }
 }
