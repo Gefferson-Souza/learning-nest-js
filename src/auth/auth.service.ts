@@ -9,6 +9,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -65,17 +66,23 @@ export class AuthService {
       {
         where: {
           email,
-          password,
         },
         select: {
           id: true,
           name: true,
           email: true,
+          password: true,
         },
       },
     );
 
     if (!user) {
+      throw new UnauthorizedException('Email e/ou senha incorretos.');
+    }
+
+    const compared = await bcrypt.compare(password, user?.password || '');
+
+    if (!compared) {
       throw new UnauthorizedException('Email e/ou senha incorretos.');
     }
 
