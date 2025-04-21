@@ -5,8 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -18,11 +16,11 @@ export class AuthService {
 
   constructor(
     private readonly _jwtService: JwtService,
-    private readonly _prismaService: PrismaService,
+    private readonly _prismaService: any,
     private readonly _userService: UserService,
   ) {}
 
-  async createToken(user: Partial<User>) {
+  async createToken(user: any) {
     return {
       token: this._jwtService.sign(
         {
@@ -62,7 +60,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<any> {
-    const user: Partial<User> | null = await this._prismaService.user.findFirst(
+    const user: Partial<any> | null = await this._prismaService.user.findFirst(
       {
         where: {
           email,
@@ -111,7 +109,7 @@ export class AuthService {
     //TO DO: Extrair id do token...
     const id = 0;
 
-    const user: User = await this._prismaService.user.update({
+    const user: any = await this._prismaService.user.update({
       where: {
         id,
       },
