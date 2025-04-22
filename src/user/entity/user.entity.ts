@@ -32,7 +32,7 @@ export class User {
     type: 'date',
     nullable: true,
   })
-  birthDate: string;
+  birthAt: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -21,7 +21,7 @@ export class AuthService {
     private readonly _jwtService: JwtService,
     private readonly _userService: UserService,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private _userRepository: Repository<User>,
   ) {}
 
   async createToken(user: any) {
@@ -64,25 +64,29 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<any> {
-    const user: Partial<any> | null = await this.userRepository.findOneBy({
-      email,
-    });
+    try {      
+      const user: Partial<any> | null = await this._userRepository.findOneBy({
+        email,
+      });
 
-    if (!user) {
-      throw new UnauthorizedException('Email e/ou senha incorretos.');
+      if (!user) {
+        throw new UnauthorizedException('Email e/ou senha incorretos.');
+      }
+  
+      const compared = await bcrypt.compare(password, user?.password || '');
+  
+      if (!compared) {
+        throw new UnauthorizedException('Email e/ou senha incorretos.');
+      }
+  
+      return this.createToken(user);
+    } catch (error) {
+      return error;
     }
-
-    const compared = await bcrypt.compare(password, user?.password || '');
-
-    if (!compared) {
-      throw new UnauthorizedException('Email e/ou senha incorretos.');
-    }
-
-    return this.createToken(user);
   }
 
   async forget(email: string): Promise<boolean> {
-    const user = await this.userRepository.findOneBy({
+    const user = await this._userRepository.findOneBy({
       email,
     });
 
@@ -101,7 +105,7 @@ export class AuthService {
     //TO DO: Extrair id do token...
     const id = 0;
 
-    const user: any = await this.userRepository.update(id, {
+    const user: any = await this._userRepository.update(id, {
       password,
     });
 
