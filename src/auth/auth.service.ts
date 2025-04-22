@@ -64,7 +64,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<any> {
-    try {      
+    try {
       const user: Partial<any> | null = await this._userRepository.findOneBy({
         email,
       });
@@ -72,13 +72,13 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('Email e/ou senha incorretos.');
       }
-  
+
       const compared = await bcrypt.compare(password, user?.password || '');
-  
+
       if (!compared) {
         throw new UnauthorizedException('Email e/ou senha incorretos.');
       }
-  
+
       return this.createToken(user);
     } catch (error) {
       return error;

@@ -17,7 +17,7 @@ export class UserService {
   async create(data: CreateUserDto) {
     data.password = await this.encriptedPassword(data.password);
 
-    const user =  this.userRepository.create(data);
+    const user = this.userRepository.create(data);
     return this.userRepository.save(user);
   }
 
