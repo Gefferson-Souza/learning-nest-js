@@ -3,30 +3,31 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import { User } from './entity/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
-  private readonly _prismaService: any;
-  constructor() {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async create(data: CreateUserDto) {
     data.password = await this.encriptedPassword(data.password);
 
-    return this._prismaService.user.create({ data });
+    return this.userRepository.create(data);
   }
 
   async list(): Promise<any[]> {
-    return this._prismaService.user.findMany();
+    return this.userRepository.find();
   }
 
   async findOne(id: number): Promise<any> {
     await this.exists(id);
 
-    return this._prismaService.user.findUnique({
-      where: {
-        id,
-      },
-    });
+    return this.userRepository.findOneBy({ id });
   }
 
   async update(id: number, data: UpdatePutUserDto) {
@@ -38,11 +39,8 @@ export class UserService {
       data.password = await this.encriptedPassword(data.password);
     }
 
-    return this._prismaService.user.update({
-      where: {
-        id,
-      },
-      data,
+    return this.userRepository.update(id, {
+      ...data,
     });
   }
 
@@ -57,30 +55,19 @@ export class UserService {
       data.password = await this.encriptedPassword(data.password);
     }
 
-    return this._prismaService.user.update({
-      where: {
-        id,
-      },
-      data,
+    return this.userRepository.update(id, {
+      ...data,
     });
   }
 
   async deleteUser(id: number) {
     await this.exists(id);
 
-    return this._prismaService.user.delete({
-      where: {
-        id,
-      },
-    });
+    return this.userRepository.delete(id);
   }
 
   async exists(id: number): Promise<boolean> {
-    const user = await this._prismaService.user.count({
-      where: {
-        id,
-      },
-    });
+    const user = await this.userRepository.countBy({ id });
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }

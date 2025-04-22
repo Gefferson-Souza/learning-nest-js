@@ -8,6 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,8 +19,9 @@ export class AuthService {
 
   constructor(
     private readonly _jwtService: JwtService,
-    private readonly _prismaService: any,
     private readonly _userService: UserService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async createToken(user: any) {
@@ -60,19 +64,9 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<any> {
-    const user: Partial<any> | null = await this._prismaService.user.findFirst(
-      {
-        where: {
-          email,
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          password: true,
-        },
-      },
-    );
+    const user: Partial<any> | null = await this.userRepository.findOneBy({
+      email,
+    });
 
     if (!user) {
       throw new UnauthorizedException('Email e/ou senha incorretos.');
@@ -88,10 +82,8 @@ export class AuthService {
   }
 
   async forget(email: string): Promise<boolean> {
-    const user = await this._prismaService.user.findFirst({
-      where: {
-        email,
-      },
+    const user = await this.userRepository.findOneBy({
+      email,
     });
 
     if (!user) {
@@ -109,13 +101,8 @@ export class AuthService {
     //TO DO: Extrair id do token...
     const id = 0;
 
-    const user: any = await this._prismaService.user.update({
-      where: {
-        id,
-      },
-      data: {
-        password,
-      },
+    const user: any = await this.userRepository.update(id, {
+      password,
     });
 
     return this.createToken(user);
