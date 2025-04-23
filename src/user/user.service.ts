@@ -43,7 +43,7 @@ export class UserService {
     await this.userRepository.update(id, {
       ...data,
     });
-  
+
     return this.userRepository.findOneBy({ id });
   }
 
@@ -61,7 +61,7 @@ export class UserService {
     await this.userRepository.update(id, {
       ...data,
     });
-  
+
     return this.userRepository.findOneBy({ id });
   }
 

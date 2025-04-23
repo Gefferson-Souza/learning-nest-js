@@ -1,4 +1,4 @@
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateUserDto } from "../user/dto/create-user.dto";
 
 export const createUserDtoMock: CreateUserDto = {
   name: 'John Doe',

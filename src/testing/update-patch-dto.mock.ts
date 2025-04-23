@@ -1,4 +1,5 @@
-import { UpdatePatchUserDto } from 'src/user/dto/update-patch-user.dto';
+import { UpdatePatchUserDto } from "../user/dto/update-patch-user.dto";
+
 export const updatePatchDtoMock: UpdatePatchUserDto = {
-    role:1
+  role: 1,
 };
