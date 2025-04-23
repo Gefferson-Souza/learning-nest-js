@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
-import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
+import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import { UserService } from './user.service';
 import { ParamId } from 'src/decorators/param-id.decorator';
 import { Role } from 'src/enums/role.enum';

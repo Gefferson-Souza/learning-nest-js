@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
-import { UpdatePatchUserDto } from './dto/update-patch-user.dto copy';
+import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
@@ -15,7 +15,7 @@ export class UserService {
   ) {}
 
   async create(data: CreateUserDto) {
-    data.password = await this.encriptedPassword(data.password);
+    // data.password = await this.encriptedPassword(data.password);
 
     const user = this.userRepository.create(data);
     return this.userRepository.save(user);
@@ -40,9 +40,11 @@ export class UserService {
       data.password = await this.encriptedPassword(data.password);
     }
 
-    return this.userRepository.update(id, {
+    await this.userRepository.update(id, {
       ...data,
     });
+  
+    return this.userRepository.findOneBy({ id });
   }
 
   async updatePartial(id: number, data: UpdatePatchUserDto) {
@@ -56,15 +58,19 @@ export class UserService {
       data.password = await this.encriptedPassword(data.password);
     }
 
-    return this.userRepository.update(id, {
+    await this.userRepository.update(id, {
       ...data,
     });
+  
+    return this.userRepository.findOneBy({ id });
   }
 
   async deleteUser(id: number) {
     await this.exists(id);
 
-    return this.userRepository.delete(id);
+    await this.userRepository.delete(id);
+
+    return true;
   }
 
   async exists(id: number): Promise<boolean> {
