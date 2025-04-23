@@ -34,12 +34,12 @@ describe('authService', () => {
     describe('Token', () => {
         test('Create Token Method', async () => {
             const result = await authService.createToken(userEntityList[0]);
+            
             expect(result).toEqual({
                 token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2VmZmVyc29uIiwiZW1haWwiOiJnZWZmZXJzb25AZ21haWwuY29tIiwiaWF0IjoxNzQ1NDExMTk4LCJleHAiOjE3NDYwMTU5OTgsImF1ZCI6InVzZXJzIiwiaXNzIjoibG9naW4iLCJzdWIiOiIxIn0.44P5h2I6oaRw_Tbf02BemsieGI5LMMbkMN7DQfcPmsM"
             })
         })
     })
-    
     describe('Authentication', () => {})
     describe('Token', () => {})
 })

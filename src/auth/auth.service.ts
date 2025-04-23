@@ -111,7 +111,7 @@ export class AuthService {
 
     return this.createToken(user);
   }
-
+  
   async register(data: AuthRegisterDto) {
     const user = await this._userService.create(data);
 
