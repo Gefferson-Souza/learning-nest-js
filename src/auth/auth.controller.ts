@@ -24,7 +24,6 @@ import { FileService } from '../file/file.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { UserService } from '../user/user.service';
 
-
 @Controller('auth')
 export class AuthController {
   constructor(
