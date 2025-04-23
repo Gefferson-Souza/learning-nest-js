@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn({
     unsigned: true,
@@ -32,7 +32,7 @@ export class User {
     type: 'date',
     nullable: true,
   })
-  birthAt: Date | null;
+  birthAt?: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -44,5 +44,5 @@ export class User {
     enum: Role,
     default: 1,
   })
-  role: number;
+  role?: number;
 }

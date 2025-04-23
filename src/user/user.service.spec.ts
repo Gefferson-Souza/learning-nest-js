@@ -21,21 +21,20 @@ describe('userService', () => {
 
   describe('create', () => {
     test('Criar um novo usuário', async () => {
-        const data:CreateUserDto = {
-            name: 'John Doe',
-            email: 'test@gmail.com',
-            password: '123456',
-            birthAt: new Date('1990-01-01'),
-        }
+      const data: CreateUserDto = {
+        name: 'John Doe',
+        email: 'test@gmail.com',
+        password: '123456',
+        birthAt: new Date('1990-01-01'),
+      };
 
-        const user:User = await userService.create(data);
+      const user: User = await userService.create(data);
 
-        expect(user).toBeDefined();
-        expect(user).toHaveProperty('id');
-        expect(user).toHaveProperty('name', data.name);
-        expect(user).toHaveProperty('email', data.email);
-        expect(user).toHaveProperty('password', data.password);
-
-    })
+      expect(user).toBeDefined();
+      expect(user).toHaveProperty('id');
+      expect(user).toHaveProperty('name', data.name);
+      expect(user).toHaveProperty('email', data.email);
+      expect(user).toHaveProperty('password', data.password);
+    });
   });
 });

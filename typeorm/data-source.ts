@@ -1,6 +1,5 @@
 import { DataSource } from "typeorm";
 
-
 const dataSource = new DataSource({
     type: 'mysql',
     host: 'localhost',
@@ -8,7 +7,7 @@ const dataSource = new DataSource({
     username: 'root',
     password: 'root',
     database: 'meubanco',
-    migrations: [`./migrations/**/*.ts`],
+    migrations: ['./typeorm/migrations/*.ts'],
 })
 
 export default dataSource;

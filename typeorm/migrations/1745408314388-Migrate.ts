@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class Migrate1745291187399 implements MigrationInterface {
+export class Migrate1745408314388 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(new Table({
-            name:'user',
+            name:'users',
             columns:[{
                 name:'id',
                 type:'int',
@@ -47,7 +47,6 @@ export class Migrate1745291187399 implements MigrationInterface {
         name:'role',
         type:'int',
         default:1,
-        enum:['1', '2'],
 }]
         }))
     }
