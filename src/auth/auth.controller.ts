@@ -28,7 +28,6 @@ import { UserService } from '../user/user.service';
 export class AuthController {
   constructor(
     private readonly _authService: AuthService,
-    private readonly _userService: UserService,
     private readonly _fileService: FileService,
   ) {}
 
