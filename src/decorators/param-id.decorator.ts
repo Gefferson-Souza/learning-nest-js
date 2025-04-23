@@ -22,7 +22,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
  */
 export const ParamId = createParamDecorator(
   (_data: unknown, context: ExecutionContext): number => {
-    const request = context.switchToHttp().getRequest().params.id;
+    const request: string = context.switchToHttp().getRequest().params.id;
     const numericId: number = parseInt(request, 10);
 
     return numericId;

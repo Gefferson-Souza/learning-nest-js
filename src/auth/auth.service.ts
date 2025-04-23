@@ -12,6 +12,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entity/user.entity';
 
+// Interfaces para tipagem
+interface TokenResponse {
+  token: string;
+}
+
+interface UserPayload {
+  id: number;
+  name: string;
+  email: string;
+}
+
 @Injectable()
 export class AuthService {
   private readonly issuer: string = 'login';
@@ -24,7 +35,7 @@ export class AuthService {
     private _userRepository: Repository<User>,
   ) {}
 
-  async createToken(user: any) {
+  createToken(user: UserPayload): TokenResponse {
     return {
       token: this._jwtService.sign(
         {
@@ -41,9 +52,9 @@ export class AuthService {
     };
   }
 
-  checkToken(token: string): any | BadRequestException {
+  checkToken(token: string): any {
     try {
-      const validToken = this._jwtService.verify(token, {
+      const validToken = this._jwtService.verify<any>(token, {
         audience: this.audience,
         issuer: this.issuer,
       });
@@ -58,31 +69,27 @@ export class AuthService {
     try {
       this.checkToken(token);
       return true;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
-  async login(email: string, password: string): Promise<any> {
-    try {
-      const user: Partial<any> | null = await this._userRepository.findOneBy({
-        email,
-      });
+  async login(email: string, password: string): Promise<TokenResponse> {
+    const user = await this._userRepository.findOneBy({
+      email,
+    });
 
-      if (!user) {
-        throw new UnauthorizedException('Email e/ou senha incorretos.');
-      }
-
-      const compared = await bcrypt.compare(password, user?.password || '');
-
-      if (!compared) {
-        throw new UnauthorizedException('Email e/ou senha incorretos.');
-      }
-
-      return this.createToken(user);
-    } catch (error) {
-      return error;
+    if (!user) {
+      throw new UnauthorizedException('Email e/ou senha incorretos.');
     }
+
+    const compared = await bcrypt.compare(password, user?.password || '');
+
+    if (!compared) {
+      throw new UnauthorizedException('Email e/ou senha incorretos.');
+    }
+
+    return this.createToken(user);
   }
 
   async forget(email: string): Promise<boolean> {
@@ -99,20 +106,26 @@ export class AuthService {
     return true;
   }
 
-  async reset(token: string, password: string) {
+  async reset(token: string, password: string): Promise<TokenResponse> {
     //TO DO: Validar token...
 
     //TO DO: Extrair id do token...
     const id = 0;
 
-    const user: any = await this._userRepository.update(id, {
+    const user = await this._userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    await this._userRepository.update(id, {
       password,
     });
 
     return this.createToken(user);
   }
 
-  async register(data: AuthRegisterDto) {
+  async register(data: AuthRegisterDto): Promise<TokenResponse> {
     const user = await this._userService.create(data);
 
     return this.createToken(user);

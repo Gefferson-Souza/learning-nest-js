@@ -32,8 +32,8 @@ describe('authService', () => {
   });
 
   describe('Token', () => {
-    test('Create Token Method', async () => {
-      const result = await authService.createToken(userEntityList[0]);
+    test('Create Token Method', () => {
+      const result = authService.createToken(userEntityList[0]);
 
       expect(result).toEqual({
         token:

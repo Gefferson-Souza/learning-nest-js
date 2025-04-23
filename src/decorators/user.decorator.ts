@@ -6,7 +6,7 @@ import {
 
 export const User = createParamDecorator(
   (filter: string, context: ExecutionContext) => {
-    const request = context.switchToHttp().getRequest();
+    const request: any = context.switchToHttp().getRequest();
 
     if (!request.user) {
       throw new NotFoundException(

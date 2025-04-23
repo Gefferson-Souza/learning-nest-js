@@ -5,8 +5,6 @@ import {
   Headers,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
-  NotFoundException,
   BadRequestException,
   UploadedFiles,
 } from '@nestjs/common';
@@ -16,13 +14,26 @@ import { AuthRegisterDto } from './dto/auth-register.dto';
 import { AuthForgetDto } from './dto/auth-forget.dto';
 import { AuthResetDto } from './dto/auth-reset.dto';
 
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { writeFile } from 'fs';
-import path, { join } from 'path';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
 import { User } from '../decorators/user.decorator';
 import { FileService } from '../file/file.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { UserService } from '../user/user.service';
+
+// Tipagens
+interface TokenResponse {
+  token: string;
+}
+
+interface VerifyResponse {
+  user: number;
+  token: string;
+}
+
+interface FileUploadResponse {
+  success: boolean;
+  message: string;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -32,28 +43,38 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() { email, password }: AuthLoginDto) {
+  async login(
+    @Body() { email, password }: AuthLoginDto,
+  ): Promise<TokenResponse> {
     return this._authService.login(email, password);
   }
 
   @Post('register')
-  async register(@Body() body: AuthRegisterDto) {
+  async register(@Body() body: AuthRegisterDto): Promise<TokenResponse> {
     return this._authService.register(body);
   }
 
   @Post('forget')
-  async forget(@Body() { email }: AuthForgetDto) {
-    return this._authService.forget(email);
+  async forget(
+    @Body() { email }: AuthForgetDto,
+  ): Promise<{ success: boolean }> {
+    const success = await this._authService.forget(email);
+    return { success };
   }
 
   @Post('reset')
-  async reset(@Body() { token, password }: AuthResetDto) {
+  async reset(
+    @Body() { token, password }: AuthResetDto,
+  ): Promise<TokenResponse> {
     return this._authService.reset(token, password);
   }
 
   @UseGuards(AuthGuard)
   @Post('verify')
-  async verify(@Headers('authorization') token: string, @User('id') user: any) {
+  verify(
+    @Headers('authorization') token: string,
+    @User('id') user: number,
+  ): VerifyResponse {
     return {
       user,
       token,
@@ -66,9 +87,9 @@ export class AuthController {
   async uploadPhoto(
     @Headers('authorization') token: string,
     @UploadedFiles() files: Express.Multer.File[],
-  ) {
+  ): Promise<FileUploadResponse> {
     try {
-      const filesPromieses: Promise<any>[] = files.map(
+      const filesPromieses: Promise<string>[] = files.map(
         (file: Express.Multer.File) => {
           const storagePath = join(
             __dirname,

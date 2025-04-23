@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { userEntityList } from '../src/testing/user-entity-list.mock';
 import { userE2eMock } from '../src/testing/user-e2e.mock';
 import dataSource from '../typeorm/data-source';
 import { Role } from '../src/enums/role.enum';
@@ -80,16 +79,15 @@ describe('AppController (e2e)', () => {
         UPDATE users SET role = ${Role.Admin} WHERE id = ${userInfoMock.user}
       `);
 
-    const updatedUser = await queryRunner.query(`
+      const updatedUser = await queryRunner.query(`
         SELECT * FROM users WHERE id = ${userInfoMock.user}
       `);
 
-    expect(updatedUser[0].role).toEqual(Role.Admin);
+      expect(updatedUser[0].role).toEqual(Role.Admin);
     } finally {
       await queryRunner.release();
       await ds.destroy();
     }
-
   });
 
   it('Login with admin user', async () => {
