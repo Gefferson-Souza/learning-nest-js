@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { AuthRegisterDto } from '../src/auth/dto/auth-register.dto';
+import { userEntityList } from '../src/testing/user-entity-list.mock';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -31,7 +31,11 @@ describe('AppController (e2e)', () => {
   it('Register new user', async () => {
     const resp = await request(app.getHttpServer())
       .post('/auth/register')
-      .send(AuthRegisterDto);
+      .send({
+        name: 'gefferson',
+        email: 't@gmail.com',
+        password:'123456'
+      });
 
     expect(resp.statusCode).toBe(201);
     expect(typeof resp.body.token).toEqual('string');

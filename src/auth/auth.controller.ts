@@ -39,7 +39,7 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: AuthRegisterDto) {
-    return this._userService.create(body);
+    return this._authService.register(body);
   }
 
   @Post('forget')
